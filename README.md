@@ -1,1 +1,1 @@
-# js30-1-javascript-drum-kit
+# javascript30

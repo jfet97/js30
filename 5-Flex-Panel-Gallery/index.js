@@ -14,8 +14,7 @@ panels.forEach((panel) => {
         this.classList.add('open');
         if (lastPanelOpened) lastPanelOpened.classList.remove('open');
 
-
-        lastPanelOpened = this;
+        lastPanelOpened = lastPanelOpened == this ? null : this;
     });
 
 

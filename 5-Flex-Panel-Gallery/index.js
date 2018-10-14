@@ -14,6 +14,17 @@ panels.forEach((panel) => {
         this.classList.add('open');
         if (lastPanelOpened) lastPanelOpened.classList.remove('open');
 
+        // Inexplicable intuition that solves the problem encountered
+        // when you open a panel, then you close it by clicking on the same panel
+        // - which causes adding 'open' to a panel that already has 'open' but no problems because add() won't have effects
+        // and we are immediately removing 'open' -
+        // and then you try to reopen it.
+        // Try lastPanelOpened = this; and you'll understand.
+        // Without lastPanelOpened = lastPanelOpened == this ? null : this;
+        // you'll add 'open' that is what you want this time, but immediately removie it because 
+        // lastPanelOpened points to the current panel. 
+        // The last time was necessary, this time is wrong.
+        // I said, this is inexplicable.
         lastPanelOpened = lastPanelOpened == this ? null : this;
     });
 

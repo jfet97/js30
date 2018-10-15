@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <form class="search-form">
+        <input type="text" class="search" placeholder="City or State">
+        <ul class="suggestions">
+            <li>Filter for a city</li>
+            <li>or a state</li>
+        </ul>
+    </form>
+    <script>
+        const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+        const searchInput = document.querySelector('.search');
+        const suggestions = document.querySelector('.suggestions');
+
+
+
+        function findMatches(wordToMatch, places) {
+            return places.filter(place => {
+                const regex = new RegExp(wordToMatch, 'gi');
+                return place.city.match(regex) || place.state.match(regex);
+            });
+        }
+
+        function displayMatches(places) {
+            // this == searchInput
+            // this.value -> value entered
+
+            const matchArray = findMatches(this.value, places);
+
+            // remove previous items
+            suggestions.innerHTML = '';
+
+            matchArray.forEach(place => {
+
+                const li = document.createElement("li");
+                const span1 = document.createElement("span");
+                const span2 = document.createElement("span");
+                const text1 = document.createTextNode(`${place.city}, ${place.state}`);
+                const text2 = document.createTextNode(`${place.population}`);
+
+                span1.appendChild(text1);
+                span2.appendChild(text2);
+                span1.classList.add('name');
+                span2.classList.add('population');
+                li.appendChild(span1);
+                li.appendChild(span2);
+                suggestions.appendChild(li);
+
+            });
+
+
+        }
+
+        (async function IIFE(ep) {
+            const places = [];
+
+            try {
+                const blob = await fetch(ep);
+                const json = await blob.json();
+                places.push(...json);
+
+                // when we got data we can add the listener
+                searchInput.addEventListener('input', function () {
+                    // this == searchInput
+                    displayMatches.call(this, places);
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        })(endpoint);
+
+    </script>
+</body>
+
+</html>
